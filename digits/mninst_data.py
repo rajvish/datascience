@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 import random
 
 class mninst_data:
-    def __init__(self,imageFile,labelFile):
+    def __init__(self,imageFile = "train-images-idx3-ubyte", 
+                labelFile = "train-labels-idx1-ubyte"):
         self.imageFile = imageFile
         self.labelFile = labelFile
         self.keyImage = 2051
