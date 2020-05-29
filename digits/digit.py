@@ -9,7 +9,7 @@ from NNLayer import compute_loss
 from NNLayer import compute_loss_gradients
 
 
-from mnist_data import mnist_data
+from mnist_digits import mnist_digits
 
     
 def buildNetwork(X,layers):
@@ -85,7 +85,7 @@ def main():
     np.random.seed(0)
     iFile = "train-images-idx3-ubyte"
     lFile = "train-labels-idx1-ubyte"
-    data=mnist_data(iFile,lFile)
+    data=mnist_digits(iFile,lFile)
     images,labels = data.getData()
     nclasses=10
     X= images/255.0

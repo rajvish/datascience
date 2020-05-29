@@ -1,6 +1,4 @@
 #echo "Datascience propjects"
 
-This project is to read digits from a handwriting set of data from mninst
-
-
+digits - Recognize handwriting digits from the mnist_digits
 

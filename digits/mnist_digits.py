@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import random
 
-class mninst_data:
+class mnist_digits:
     def __init__(self,imageFile = "train-images-idx3-ubyte", 
                 labelFile = "train-labels-idx1-ubyte"):
         self.imageFile = imageFile
@@ -90,11 +90,11 @@ class mninst_data:
         plt.title(self.labels[index])   #Remember Y is a mx1 matrix
         plt.show()
     
-def mninst_data_test():
+def mnist_digts_test():
     np.random.seed(0)
     iFile = "train-images-idx3-ubyte"
     lFile = "train-labels-idx1-ubyte"
-    data=mninst_data(iFile,lFile)
+    data=mnist_digits(iFile,lFile)
     nItems=data.getnItems()
     print("Number of Images = ",nItems)
     print("Pixel Width = ",data.getPicwidth())
@@ -107,4 +107,4 @@ def mninst_data_test():
     print(labels.shape)
 
 if __name__ == "main":
-    mninst_data_test()
+    mnist_digits_test()
