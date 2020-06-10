@@ -55,8 +55,10 @@ class Network:
     def _singleStep(self,X,y):
         activations=self._forwardPropagation(X)
         yhat=activations[-1]
-        y1=np.argmax(y*yhat,axis=1)
-        p=np.mean(y1 == np.argmax(y))
+        y1=yhat.argmax(axis=-1)
+        
+        p=np.mean(y1 == np.argmax(y,axis=1))
+        print("Prediction = ",p)
         self.predictions.append(p)
         loss=self.computeLoss(yhat,y)
         gloss=self.computeGradientloss(yhat,y)
