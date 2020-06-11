@@ -58,7 +58,6 @@ class Network:
         y1=yhat.argmax(axis=-1)
         
         p=np.mean(y1 == np.argmax(y,axis=1))
-        print("Prediction = ",p)
         self.predictions.append(p)
         loss=self.computeLoss(yhat,y)
         gloss=self.computeGradientloss(yhat,y)
@@ -71,6 +70,8 @@ class Network:
         return self.loss
     def getPredictions(self):
         return self.predictions
+    def getLoss(self):
+        return self.loss
     
 class NeuronLayer:
     def __init__(self,layerName,nInput,nOutput,lrate=0.5,factor=0.01):
@@ -80,9 +81,9 @@ class NeuronLayer:
         self.lrate=lrate
         self.factor = factor
         self.W=np.random.randn(nInput,nOutput)*self.factor
-        print("W Shape",self.W.shape)
+        #print("W Shape",self.W.shape)
         self.b=np.zeros(nOutput)
-        print("b Shape",self.b.shape)
+        #print("b Shape",self.b.shape)
     def forwardPropagation(self,input):
         retval= np.matmul(input,self.W)+self.b
         return retval
@@ -93,47 +94,85 @@ class NeuronLayer:
         self.W = self.W - self.lrate*dW
         self.b = self.b - self.lrate*db
         return oGradientLoss
-class ReLULayer:
+class ActivationLayer:
     def __init__(self,layerName):
-        print("Initing Layer",layerName)
-        self.layerName = layerName
-    def dZ(self,input):
+        self.layerName = __name__+layerName
+    def function(self,input):
+        return self.layerName+"Function Not Implemented"
+    def plotFunction(self,min=-10.,max=10.):
+        X=np.linspace(min,max,num=500)
+        Y=self.function(X)
+        return X,Y
+    def plotDerivative(self,min=-10.,max=10.):
+        X=np.linspace(min,max,num=500)
+        Y=self.derivative(X)
+        return X,Y
+    def derivative(self, input):
+        return self.layerName+"Function Not Implemented"
+    def forwardPropagation(self,input):
+      return self.function(input)
+    def backwardPropagation(self,input,iGradientLoss):
+        oGradientLoss= iGradientLoss*self.derivative(input)
+        return  oGradientLoss
+class ReLULayer(ActivationLayer):
+    def derivative(self,input):
         return input>0
-    def forwardPropagation(self,input):
+    def function(self,input):
         return np.maximum(0,input)
-    def backwardPropagation(self,input,iGradientLoss):
-        oGradientLoss = iGradientLoss*self.dZ(input)
-        return oGradientLoss
-
-class sigmoidLayer:
-    def __init__(self,layerName):
-        print("Initing Layer",layerName)
-        self.layerName = layerName
-    def dZ(self,input):
-        return self.sigmoid(input)*(1-self.sigmoid(input))
-    def sigmoid(self,z):
+class sigmoidLayer(ActivationLayer):
+    def funcction(self,z):
         return 1./(1.+np.exp(-z))
-    def forwardPropagation(self,input):
-        sigmoidInput = self.sigmoid(input)
-        return sigmoidInput
-    def backwardPropagation(self,input,iGradientLoss):
-        oGradientLoss = iGradientLoss*self.dZ(input)
-        return  oGradientLoss
-class tanhLayer:
-    def __init__(self,layerName):
-        print("Initing Layer",layerName)
-        self.layerName = layerName
-    def tanh(self,z):
-        #t=(np.exp(z)-np.exp(-z))/(np.exp(z)+np.exp(-z))
-        t=np.tanh(z)
-        return t
-    def dZ(self,z):
-        t=self.tanh(z)
+    def derivative(self,input):
+        t= self.function(input)
+        return t*(1-t)
+class tanhLayer(ActivationLayer):
+    def function(self,z):
+        return np.tanh(z)
+    def derivative(self,z):
+        t=self.function(z)
         return 1-t*t
-    def forwardPropagation(self,input):
-        return self.tanh(input)
-    def backwardPropagation(self,input,iGradientLoss):
-        oGradientLoss= iGradientLoss*self.dZ(input)
-        return  oGradientLoss
 
 
+class identityLayer(ActivationLayer):
+    def function(serlf,input):
+      return input
+    def derivative(self,input):
+      return 1
+
+class arcTanLayer(ActivationLayer):
+    def function(self,input):
+      return np.arctan(input)
+    def derivative(self,input):
+      return 1./((input*input)+1)
+class arcSinHLayer(ActivationLayer):
+    def function(self,input):
+      return np.sinh(input)
+    def derivative(self,input):
+      return 1./np.sqrt(((input*input)+1))
+      
+class softSignLayer(ActivationLayer):
+    def function(self,input):
+        return input/(1+np.abs(input))
+    def derivative(self,input):
+        t=self.function(input)
+        return 1./t*t
+class leakyReLULayer(ActivationLayer):
+    def __init__(self,layerName,alpha):
+        super().__init__(layerName)
+        #self.layerName = layerName
+        self.alpha =alpha
+    def function(self,input):
+        return np.where(input > 0,input, input*self.alpha)
+    def derivative(self,input):
+        return np.where(input > 0,1.0, self.alpha)
+        return self.alpha if input < 0 else 1.0
+class sinusoidLayer(ActivationLayer):
+    def function(self,input):
+        return np.sin(input)
+    def derivative(self,input):
+        return np.cos(input)
+class gaussianLayer(ActivationLayer):
+    def function(self,input):
+        return np.exp(-input*input)
+    def derivative(self,input):
+        return -2.*input*self.function(input)
