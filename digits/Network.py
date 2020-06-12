@@ -134,7 +134,7 @@ class tanhLayer(ActivationLayer):
 
 
 class identityLayer(ActivationLayer):
-    def function(serlf,input):
+    def function(self,input):
       return input
     def derivative(self,input):
       return 1

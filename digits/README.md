@@ -28,3 +28,4 @@ Predictions:
 Activations Graphs:
     lrelu.plotFunction() - Will plot the Activation function 
     lrelu.plotDerivative() - Will plot the derivative for the Activation Function
+Making sure this goes
