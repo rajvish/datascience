@@ -75,7 +75,7 @@ class Network:
     
 class NeuronLayer:
     def __init__(self,layerName,nInput,nOutput,lrate=0.5,factor=0.01):
-        self.layerName = layerName
+        self.layerName = type(self).__name__+ layerName
         self.nInput= nInput
         self.Output=nOutput
         self.lrate=lrate
@@ -96,7 +96,8 @@ class NeuronLayer:
         return oGradientLoss
 class ActivationLayer:
     def __init__(self,layerName):
-        self.layerName = __name__+layerName
+        print(type(self).__name__)
+        self.layerName = type(self).__name__+layerName
     def function(self,input):
         return self.layerName+"Function Not Implemented"
     def plotFunction(self,min=-10.,max=10.):
@@ -120,7 +121,7 @@ class ReLULayer(ActivationLayer):
     def function(self,input):
         return np.maximum(0,input)
 class sigmoidLayer(ActivationLayer):
-    def funcction(self,z):
+    def function(self,z):
         return 1./(1.+np.exp(-z))
     def derivative(self,input):
         t= self.function(input)
